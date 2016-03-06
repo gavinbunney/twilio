@@ -1,8 +1,8 @@
 (function($, window) {
   'use strict';
 
-  function TwilioAdapter(onError) {
-    this.setup(onError);
+  function TwilioAdapter(onError, onConversationStarted) {
+    this.setup(onError, onConversationStarted);
   }
 
   TwilioAdapter.prototype = {
@@ -12,21 +12,28 @@
     previewMedia : undefined,
     onError: undefined,
 
-    setup: function(onError) {
+    setup: function(onError, onConversationStarted) {
       if (!navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
         alert('WebRTC is not available in your browser.');
+        return;
       }
 
       this.onError = onError;
+      this.onConversationStarted = onConversationStarted;
 
-      var accessToken = 'ACCESS_TOKEN_HOME';
+      var accessToken = 'ACCESS_TOKEN_HERE';
+      if (accessToken === 'ACCESS_TOKEN_HERE') {
+        alert('You need to set your accessToken first!\nSee the README for help.');
+        return;
+      }
+
       var accessManager = new Twilio.AccessManager(accessToken);
 
       // create a Conversations Client and connect to Twilio
       this.conversationsClient = new Twilio.Conversations.Client(accessManager);
       var self = this;
       this.conversationsClient.listen().then(
-        this.clientConnected,
+        $.proxy(this.clientConnected, this),
         function (error) {
           self.log('Could not connect to Twilio: ' + error.message, error);
         }
@@ -72,7 +79,7 @@
       var self = this;
       this.conversationsClient.on('invite', function (invite) {
         self.log('Incoming invite from: ' + invite.from);
-        invite.accept().then(self.conversationStarted);
+        invite.accept().then($.proxy(self.conversationStarted, self));
       });
     },
 
@@ -89,7 +96,7 @@
 
         var self = this;
         this.conversationsClient.inviteToConversation(inviteTo, options).then(
-          this.conversationStarted,
+          $.proxy(self.conversationStarted, self),
           function (error) {
             self.log('Unable to create conversation', error);
             console.error('Unable to create conversation', error);
@@ -101,20 +108,19 @@
     conversationStarted: function (conversation) {
       this.log('In an active Conversation');
       this.activeConversation = conversation;
-      // draw local video, if not already previewing
-      if (!this.previewMedia) {
-        conversation.localMedia.attach('.feed-preview');
-      }
+
       // when a participant joins, draw their video on screen
       var self = this;
       conversation.on('participantConnected', function (participant) {
         self.log('Participant \'' + participant.identity + '\' connected');
         participant.media.attach('.home .feed');
       });
+
       // when a participant disconnects, note in log
       conversation.on('participantDisconnected', function (participant) {
         self.log('Participant \'' + participant.identity + '\' disconnected');
       });
+
       // when the conversation ends, stop capturing local video
       conversation.on('ended', function (conversation) {
         self.log('Connected to Twilio. Listening for incoming Invites as \'' + this.conversationsClient.identity + '\'');
@@ -122,6 +128,10 @@
         conversation.disconnect();
         self.activeConversation = null;
       });
+
+      if (this.onConversationStarted) {
+        this.onConversationStarted(conversation);
+      }
     },
 
     log: function(message, error) {

@@ -9,6 +9,9 @@ video {
 
 .home {
 
+  // initially hide the home view until it's finished loading
+  display: none;
+
   padding-top: 40px;
   margin: 80px auto 0;
   width: 600px;
@@ -26,6 +29,7 @@ video {
 
   .feed-wrapper {
     width: 100%;
+    position:relative;
 
     .feed {
       width: 580px;
@@ -36,8 +40,9 @@ video {
     }
 
     .feed-preview {
-      display: inline-block;
-      margin: 0 0 0 auto;
+      position:absolute;
+      top:0;
+      left:0;
       background-color: @neutral;
       width: 133px;
       height: 100px;
@@ -75,15 +80,6 @@ video {
 
       &.invite {
         background-image: url('/assets/images/invite@2x.png');
-      }
-
-      &.close {
-        width: 25px;
-        height: 25px;
-        background-image: url('/assets/images/close.png');
-        float: right;
-        margin-right: 5px;
-        margin-top: 5px;
       }
     }
   }

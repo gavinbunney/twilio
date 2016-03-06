@@ -19,7 +19,6 @@
       this.views = {
         feedPreview : $('.feed .feed-preview'),
         feedPreviewBtn : $('.feed-controls .preview'),
-        closeFeedBtn: $('.feed .close'),
         feedStartBtn: $('.feed-controls .start'),
         feedEndBtn: $('.feed-controls .end'),
 
@@ -32,29 +31,34 @@
         sendInviteBtn: $('.sendInviteBtn')
       };
 
-      this.TwilioAdapter = new TwilioAdapter($.proxy(this.handleTwilioError, this));
+      this.TwilioAdapter = new TwilioAdapter(
+        $.proxy(this.handleTwilioError, this),
+        $.proxy(this.onTwilioConversationStarted, this)
+      );
 
       this.refresh();
       this.views.feedPreviewBtn.click($.proxy(this.previewFeedClicked, this));
-      this.views.feedStartBtn.click($.proxy(this.feedStartClicked, this));
       this.views.feedEndBtn.click($.proxy(this.feedEndClicked, this));
-      this.views.closeFeedBtn.click($.proxy(this.closeFeedClicked, this));
       this.views.sendInviteBtn.click($.proxy(this.sendInviteClicked, this));
       this.views.closeModalBtn.click($.proxy(this.closeModalClicked, this));
 
       // delegate directly to lean modal for inviting
+      this.views.feedStartBtn.leanModal();
       this.views.feedInviteBtn.leanModal();
+
+      // all setup, show the home view node
+      $('.home').show();
     },
 
     refresh: function () {
       if (this.options.started) {
         this.views.feedStartBtn.hide();
+        this.views.feedInviteBtn.show();
         this.views.feedEndBtn.show();
-        this.views.closeFeedBtn.show();
       } else {
         this.views.feedStartBtn.show();
+        this.views.feedInviteBtn.hide();
         this.views.feedEndBtn.hide();
-        this.views.closeFeedBtn.hide();
       }
 
       if (this.options.preview) {
@@ -72,25 +76,11 @@
       this.refresh();
     },
 
-    feedStartClicked: function() {
-      if (!this.options.preview) {
-        this.options.preview = true;
-        this.TwilioAdapter.previewFeed();
-      }
-
-      this.options.started = true;
-      this.refresh();
-    },
-
     feedEndClicked: function() {
       this.TwilioAdapter.closeFeed();
       this.options.preview = false;
       this.options.started = false;
       this.refresh();
-    },
-
-    closeFeedClicked: function() {
-      this.feedEndClicked();
     },
 
     closeModalClicked: function() {
@@ -128,6 +118,14 @@
         );
         $('.log-content').attr('href', '#connectionErrorModal').leanModal().click();
       }
+    },
+
+    onTwilioConversationStarted: function() {
+      this.options.started = true;
+      if (!this.options.preview) {
+        this.previewFeedClicked();
+      }
+      this.refresh();
     }
   };
 
