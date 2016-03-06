@@ -1,0 +1,61 @@
+#lean_overlay {
+  position: fixed;
+  z-index: 9000;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #222;
+  display: none;
+}
+
+.modal {
+  color: #545454;
+  width: 500px;
+  padding-bottom: 2px;
+
+  display: none;
+  background: #fff;
+  .border-radius(5px);
+  .box-shadow(0 0 4px rgba(0,0,0,0.7));
+  font-size: 0.6em;
+
+  .modal-body {
+    padding: 10px 20px;
+  }
+
+  .modal-footer {
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: right;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: block;
+    width: 12px;
+    height: 12px;
+    background: url('/assets/images/close.png') no-repeat center center;
+    background-size: cover;
+  }
+
+  label, input {
+    display: block;
+    width: 100%;
+  }
+
+  button {
+    display: inline-block;
+    font-size: 0.9em;
+    font-weight: 700;
+    border: 0;
+    background-color: @green-dark;
+    color: white;
+  }
+
+  .field-group {
+    margin-bottom: 10px;
+  }
+}

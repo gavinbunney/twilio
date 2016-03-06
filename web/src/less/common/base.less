@@ -1,0 +1,34 @@
+@import 'mixins';
+
+html, body {
+  margin: 0;
+  padding: 0;
+  z-index: 0;
+
+  background-image: url('/assets/images/background.png');
+  background-attachment: fixed;
+}
+
+html, body {
+  color: #ffffff;
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 22px;
+  line-height: 1em;
+  -webkit-font-smoothing: antialiased;
+
+  /* fix any odd mobile font resizing */
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+.logo {
+  width: 75px;
+  height: 75px;
+  background: url('/assets/images/logo@2x.png') no-repeat center center;
+  background-size: cover;
+}
