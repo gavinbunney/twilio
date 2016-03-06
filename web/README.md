@@ -6,7 +6,7 @@ It's a quick reworking of the quickstart app from Twilio, wrapping it in a more 
 
 ## Access Token
 
-You'll need a valid `accessToken` from Twilio to self identify. This would normally be handled by a server, but this project just relies on them already being created. So jump over  to []() and generate one.
+You'll need a valid `accessToken` from Twilio to self identify. This would normally be handled by a server, but this project just relies on them already being created. So jump over  to [Twilio](https://www.twilio.com/user/account/video/getting-started?step=2&platform=javascript&environment=maclinux) and generate one.
 
 Replace the `accessToken` variable in: `src/js/services/twilio-adapter.js`
 
@@ -15,6 +15,10 @@ var accessToken = 'ACCESS_TOKEN_HOME';
 ```
 
 Once you've done that, you're ready to rebuild and run the demo app.
+
+## Starting a Conversation
+
+This demo relies on some testing tools from Twilio to start an actual conversation [here](https://www.twilio.com/user/account/video/getting-started?platform=javascript&step=3). Assuming you have your local environment up and running, you should be able to click the `Create Conversation` button on the Twilio testing tools and start a video chat.
 
 ## Development Environment
 
